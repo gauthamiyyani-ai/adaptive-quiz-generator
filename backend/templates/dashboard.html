@@ -5,15 +5,15 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="dashboard-body modern-dashboard-body">
+<body class="dashboard-body modern-dashboard-body blue-dashboard-body">
 
 <div class="dashboard-wrapper">
 
-    <!-- Header / Analytics -->
+    <!-- Header -->
     <div class="modern-header-card">
         <div>
-            <h2>📊 My Learning Dashboard</h2>
-            <p class="dashboard-subtitle">Analyze your performance and generate personalized quizzes</p>
+            <h2>📘 Adaptive Quiz Dashboard</h2>
+            <p class="dashboard-subtitle">Generate personalized quizzes and test your knowledge intelligently</p>
         </div>
         <a href="/admin-page" class="admin-link-btn">Admin Panel</a>
     </div>
@@ -44,7 +44,7 @@
     <!-- Accuracy Graph -->
     <div class="modern-quiz-card">
         <h3 class="section-title">📈 Accuracy Analysis</h3>
-        <p class="section-subtitle">Your latest quiz performance overview</p>
+        <p class="section-subtitle">Track your performance based on your latest quiz attempts</p>
         <canvas id="accuracyChart" height="100"></canvas>
     </div>
 
@@ -53,7 +53,7 @@
 
         <div class="quiz-card-header">
             <h2>🎯 Generate a New Quiz</h2>
-            <p>Choose your source and let AI create your assessment.</p>
+            <p>Choose your source and customize the number and type of questions.</p>
         </div>
 
         <!-- Source Tabs -->
@@ -63,62 +63,96 @@
             <button onclick="showTab('pdf')" class="source-tab tab-btn">📄 PDF</button>
         </div>
 
-        <!-- Topic Input -->
+        <!-- Topic -->
         <div id="topic" class="upload-content active">
             <label class="modern-label">ENTER A TOPIC</label>
             <input type="text" id="urlInput" class="modern-input" placeholder="e.g. Machine Learning, Photosynthesis, World War II">
         </div>
 
-        <!-- Text Input -->
+        <!-- Text -->
         <div id="text" class="upload-content">
-            <label class="modern-label">PASTE YOUR TEXT</label>
+            <label class="modern-label">PASTE YOUR LEARNING MATERIAL</label>
             <textarea id="content" class="modern-textarea" placeholder="Paste your learning material here..."></textarea>
         </div>
 
-        <!-- PDF Upload -->
+        <!-- PDF -->
         <div id="pdf" class="upload-content">
             <label class="modern-label">UPLOAD PDF</label>
             <input type="file" id="fileInput" class="modern-file" accept=".pdf">
         </div>
 
-        <!-- Quiz Settings -->
-        <div class="modern-settings-grid">
+        <!-- Question Settings -->
+        <div class="question-config-grid">
 
             <div>
-                <label class="modern-label">QUESTIONS</label>
-                <select id="mcqCount" class="modern-select">
-                    <option value="5">5 Questions</option>
-                    <option value="10" selected>10 Questions</option>
-                    <option value="15">15 Questions</option>
-                    <option value="20">20 Questions</option>
-                </select>
+                <label class="modern-label">NUMBER OF MCQ</label>
+                <div class="select-wrapper">
+                    <select id="mcqCount" class="modern-select arrow-select">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                </div>
             </div>
 
             <div>
-                <label class="modern-label">FORMAT</label>
-                <select id="formatType" class="modern-select">
-                    <option value="mcq" selected>📋 Multiple Choice</option>
-                    <option value="mixed">🧠 Mixed Questions</option>
-                </select>
+                <label class="modern-label">NUMBER OF TRUE / FALSE</label>
+                <div class="select-wrapper">
+                    <select id="tfCount" class="modern-select arrow-select">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                </div>
             </div>
 
             <div>
-                <label class="modern-label">DIFFICULTY</label>
-                <select id="difficultyLevel" class="modern-select">
-                    <option value="Easy">🟢 Easy</option>
-                    <option value="Medium" selected>🟡 Medium</option>
-                    <option value="Hard">🔴 Hard</option>
-                </select>
+                <label class="modern-label">NUMBER OF SHORT ANSWER</label>
+                <div class="select-wrapper">
+                    <select id="shortCount" class="modern-select arrow-select">
+                        <option value="0">0</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="modern-label">NUMBER OF LONG ANSWER</label>
+                <div class="select-wrapper">
+                    <select id="longCount" class="modern-select arrow-select">
+                        <option value="0">0</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="modern-label">DIFFICULTY LEVEL</label>
+                <div class="select-wrapper">
+                    <select id="difficultyLevel" class="modern-select arrow-select">
+                        <option value="Easy">🟢 Easy</option>
+                        <option value="Medium" selected>🟡 Medium</option>
+                        <option value="Hard">🔴 Hard</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                </div>
             </div>
 
         </div>
 
-        <!-- Hidden values for compatibility -->
-        <input type="hidden" id="tfCount" value="0">
-        <input type="hidden" id="shortCount" value="0">
-        <input type="hidden" id="longCount" value="0">
-
-        <button id="uploadBtn" onclick="prepareQuizSettings()" class="generate-btn">
+        <button id="uploadBtn" onclick="uploadContent()" class="generate-btn">
             🚀 Generate Quiz
         </button>
 
@@ -130,28 +164,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/static/js/main.js"></script>
-
-<script>
-function prepareQuizSettings() {
-    const format = document.getElementById("formatType").value;
-    const mcq = document.getElementById("mcqCount").value;
-
-    if (format === "mcq") {
-        document.getElementById("mcqCount").value = mcq;
-        document.getElementById("tfCount").value = 0;
-        document.getElementById("shortCount").value = 0;
-        document.getElementById("longCount").value = 0;
-    } else {
-        // Mixed mode
-        document.getElementById("mcqCount").value = Math.max(2, Math.floor(mcq * 0.4));
-        document.getElementById("tfCount").value = Math.max(1, Math.floor(mcq * 0.3));
-        document.getElementById("shortCount").value = Math.max(1, Math.floor(mcq * 0.2));
-        document.getElementById("longCount").value = Math.max(1, Math.floor(mcq * 0.1));
-    }
-
-    uploadContent();
-}
-</script>
-
 </body>
 </html>

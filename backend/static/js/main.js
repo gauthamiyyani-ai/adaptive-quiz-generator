@@ -182,7 +182,15 @@ async function uploadContent() {
         const tf = document.getElementById("tfCount")?.value || 2;
         const short = document.getElementById("shortCount")?.value || 1;
         const long = document.getElementById("longCount")?.value || 1;
+        const totalQuestions =
+    parseInt(mcq) + parseInt(tf) + parseInt(short) + parseInt(long);
 
+if (totalQuestions === 0) {
+    alert("Please select at least one question.");
+    button.disabled = false;
+    button.innerText = "Generate Quiz";
+    return;
+}
         window.location.href =
             `/quiz-page?difficulty=${difficulty}&mcq=${mcq}&tf=${tf}&short=${short}&long=${long}`;
 
