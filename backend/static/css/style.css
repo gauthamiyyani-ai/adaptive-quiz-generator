@@ -898,3 +898,181 @@ textarea {
 .admin-back:hover {
     background: #1e3c72;
 }
+/* ========================= */
+/* MODERN DASHBOARD UI */
+/* ========================= */
+
+.modern-dashboard-body {
+    background: radial-gradient(circle at top left, #24193a, #0d1b2a);
+    min-height: 100vh;
+    color: white;
+}
+
+.modern-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 24px;
+    border-radius: 18px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.modern-header-card h2 {
+    margin: 0;
+    color: white;
+}
+
+.admin-link-btn {
+    text-decoration: none;
+    background: linear-gradient(90deg, #6d5dfc, #7c3aed);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.admin-link-btn:hover {
+    opacity: 0.9;
+}
+
+.modern-quiz-card {
+    background: linear-gradient(135deg, rgba(47,34,77,0.9), rgba(15,30,48,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    padding: 28px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    margin-bottom: 28px;
+    backdrop-filter: blur(10px);
+}
+
+.quiz-card-header h2 {
+    margin: 0 0 10px;
+    color: white;
+    font-size: 32px;
+}
+
+.quiz-card-header p {
+    margin: 0 0 22px;
+    color: rgba(255,255,255,0.75);
+    font-size: 18px;
+}
+
+.section-title {
+    margin-bottom: 8px;
+    color: white;
+}
+
+.section-subtitle {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 16px;
+}
+
+.source-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.source-tab {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.source-tab.active {
+    background: rgba(109,93,252,0.18);
+    border-color: #6d5dfc;
+    color: white;
+}
+
+.modern-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.75);
+    background: transparent;
+    padding: 0;
+}
+
+.modern-input,
+.modern-select,
+.modern-textarea,
+.modern-file {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.modern-input::placeholder,
+.modern-textarea::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.modern-textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.modern-select {
+    appearance: none;
+}
+
+.modern-select option {
+    color: black;
+}
+
+.modern-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 24px;
+    margin-bottom: 26px;
+}
+
+.generate-btn {
+    width: 100%;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #6d5dfc, #7c3aed, #8b5cf6);
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(109,93,252,0.35);
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.96;
+}
+
+.analytics-grid .analytics-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: white;
+}
+
+.analytics-grid .analytics-card h3 {
+    color: #9f8cff;
+}
+
+.analytics-grid .analytics-card p {
+    color: rgba(255,255,255,0.7);
+}
