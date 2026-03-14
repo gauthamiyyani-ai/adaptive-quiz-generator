@@ -9,79 +9,62 @@
 
 <div class="admin-container">
 
-    <!-- ================= TOP TABS ================= -->
+    <!-- Header -->
+    <div class="admin-header-row admin-topbar">
+        <div>
+            <h2>Admin Dashboard</h2>
+            <p class="admin-subtitle">Manage users and uploaded learning content</p>
+        </div>
+        <a href="/dashboard-page" class="admin-back">Back to Dashboard</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <h3 id="totalUsers">0</h3>
+            <p>Total Users</p>
+        </div>
+
+        <div class="stat-box">
+            <h3 id="totalContent">0</h3>
+            <p>Total Content Uploaded</p>
+        </div>
+
+        <div class="stat-box">
+            <h3 id="activeUsers">0</h3>
+            <p>Users With Quiz Attempts</p>
+        </div>
+
+        <div class="stat-box">
+            <h3 id="avgAccuracy">0%</h3>
+            <p>Average Accuracy</p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
     <div class="admin-tabs">
-        <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
-        <button class="tab" onclick="switchTab('leaderboard')">Leaderboard</button>
-        <button class="tab" onclick="switchTab('content')">Content</button>
+        <button class="tab active" onclick="switchTab('content')">Content</button>
         <button class="tab" onclick="switchTab('users')">Users</button>
     </div>
 
-    <!-- ================= DASHBOARD ================= -->
-    <div id="dashboard" class="tab-content active">
-
-        <div class="admin-header-row">
-            <h2>Admin Dashboard</h2>
-            <span class="cloud-status">✔ Backend Connected</span>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <h3 id="totalUsers">0</h3>
-                <p>Total Users</p>
-            </div>
-
-            <div class="stat-box">
-                <h3 id="totalQuizzes">0</h3>
-                <p>Total Quizzes Taken</p>
-            </div>
-
-            <div class="stat-box">
-                <h3 id="totalContent">0</h3>
-                <p>Total Content Uploaded</p>
-            </div>
-
-            <div class="stat-box">
-                <h3 id="feedbackRate">0%</h3>
-                <p>Average Accuracy</p>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================= LEADERBOARD ================= -->
-    <div id="leaderboard" class="tab-content">
-
+    <!-- Content Tab -->
+    <div id="content" class="tab-content active">
         <div class="admin-card">
-            <h3>Leaderboard</h3>
-            <div id="scoresTable"></div>
-        </div>
-
-    </div>
-
-    <!-- ================= CONTENT ================= -->
-    <div id="content" class="tab-content">
-
-        <div class="admin-card">
-            <h3>Uploaded Content</h3>
+            <h3>Uploaded Learning Content</h3>
             <div id="contentTable"></div>
         </div>
-
     </div>
 
-    <!-- ================= USERS ================= -->
+    <!-- Users Tab -->
     <div id="users" class="tab-content">
-
         <div class="admin-card">
             <h3>Registered Users</h3>
             <div id="usersTable"></div>
         </div>
-
     </div>
 
 </div>
 
 <script src="/static/js/admin.js"></script>
-
 </body>
 </html>

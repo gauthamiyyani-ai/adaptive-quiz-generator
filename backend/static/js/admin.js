@@ -26,51 +26,33 @@ function switchTab(tabId) {
 }
 
 /* ==============================
-   AUTO SWITCH AFTER URL PARAM
-============================== */
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("show") === "leaderboard") {
-    switchTab("leaderboard");
-}
-
-/* ==============================
    LOAD ADMIN DATA
 ============================== */
 async function loadAdminData() {
     try {
         const usersResponse = await fetch(API + "/admin/users");
-        const scoresResponse = await fetch(API + "/admin/scores");
         const contentResponse = await fetch(API + "/admin/content");
+        const scoresResponse = await fetch(API + "/admin/scores");
 
         const usersData = await usersResponse.json();
-        const scoresData = await scoresResponse.json();
         const contentData = await contentResponse.json();
+        const scoresData = await scoresResponse.json();
 
         const users = usersData.users || [];
-        const scores = scoresData.scores || [];
         const content = contentData.content || [];
-
-        /* ==============================
-           SORT LEADERBOARD BY SCORE
-        ============================== */
-        scores.sort((a, b) => {
-            if (b.score !== a.score) {
-                return b.score - a.score;
-            }
-            return (b.accuracy || 0) - (a.accuracy || 0);
-        });
+        const scores = scoresData.scores || [];
 
         /* ==============================
            DASHBOARD STATS
         ============================== */
         const totalUsersEl = document.getElementById("totalUsers");
-        const totalQuizzesEl = document.getElementById("totalQuizzes");
         const totalContentEl = document.getElementById("totalContent");
-        const feedbackRateEl = document.getElementById("feedbackRate");
+        const activeUsersEl = document.getElementById("activeUsers");
+        const avgAccuracyEl = document.getElementById("avgAccuracy");
 
         if (totalUsersEl) totalUsersEl.innerText = users.length;
-        if (totalQuizzesEl) totalQuizzesEl.innerText = scores.length;
         if (totalContentEl) totalContentEl.innerText = content.length;
+        if (activeUsersEl) activeUsersEl.innerText = scores.length;
 
         let totalAccuracy = 0;
         scores.forEach(s => {
@@ -81,7 +63,7 @@ async function loadAdminData() {
             ? (totalAccuracy / scores.length).toFixed(1)
             : 0;
 
-        if (feedbackRateEl) feedbackRateEl.innerText = avgAccuracy + "%";
+        if (avgAccuracyEl) avgAccuracyEl.innerText = avgAccuracy + "%";
 
         /* ==============================
            USERS TABLE
@@ -115,56 +97,6 @@ async function loadAdminData() {
         }
 
         /* ==============================
-           LEADERBOARD TABLE
-        ============================== */
-        const scoresTableEl = document.getElementById("scoresTable");
-
-        if (scoresTableEl) {
-            if (scores.length === 0) {
-                scoresTableEl.innerHTML = `<p>No quiz attempts yet.</p>`;
-            } else {
-                let scoresHTML = `
-                    <table class="admin-table">
-                        <tr>
-                            <th>Rank</th>
-                            <th>User</th>
-                            <th>Score</th>
-                            <th>Accuracy</th>
-                            <th>Avg Time (s)</th>
-                            <th>Performance</th>
-                        </tr>
-                `;
-
-                scores.forEach((s, index) => {
-                    const highlight = index === 0 ? "top-performer" : "";
-
-                    let performanceLabel = "Beginner";
-                    const accuracy = parseFloat(s.accuracy || 0);
-
-                    if (accuracy >= 80) {
-                        performanceLabel = "Advanced";
-                    } else if (accuracy >= 50) {
-                        performanceLabel = "Intermediate";
-                    }
-
-                    scoresHTML += `
-                        <tr class="${highlight}">
-                            <td>${index + 1}</td>
-                            <td>${s.user_email}</td>
-                            <td>${s.score}</td>
-                            <td>${s.accuracy || 0}%</td>
-                            <td>${s.avg_time || 0}s</td>
-                            <td>${performanceLabel}</td>
-                        </tr>
-                    `;
-                });
-
-                scoresHTML += `</table>`;
-                scoresTableEl.innerHTML = scoresHTML;
-            }
-        }
-
-        /* ==============================
            CONTENT TABLE
         ============================== */
         const contentTableEl = document.getElementById("contentTable");
@@ -182,8 +114,8 @@ async function loadAdminData() {
                 `;
 
                 content.forEach(c => {
-                    const preview = c.text.length > 80
-                        ? c.text.substring(0, 80) + "..."
+                    const preview = c.text.length > 100
+                        ? c.text.substring(0, 100) + "..."
                         : c.text;
 
                     contentHTML += `
@@ -202,11 +134,9 @@ async function loadAdminData() {
     } catch (error) {
         console.error("Admin Load Error:", error);
 
-        const scoresTableEl = document.getElementById("scoresTable");
         const usersTableEl = document.getElementById("usersTable");
         const contentTableEl = document.getElementById("contentTable");
 
-        if (scoresTableEl) scoresTableEl.innerHTML = `<p>Failed to load leaderboard data.</p>`;
         if (usersTableEl) usersTableEl.innerHTML = `<p>Failed to load users data.</p>`;
         if (contentTableEl) contentTableEl.innerHTML = `<p>Failed to load content data.</p>`;
     }
