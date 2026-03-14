@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Adaptive Quiz</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+<div class="dashboard-wrapper">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h2>Learning Material Upload</h2>
+        <a href="/admin-page">Admin Panel</a>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="dashboard-card">
+
+        <h3>Upload Learning Material</h3>
+
+        <!-- ================= UPLOAD TABS ================= -->
+        <div class="upload-tabs">
+            <button onclick="showTab('text')" class="tab-btn active">Paste Text</button>
+            <button onclick="showTab('url')" class="tab-btn">Enter URL</button>
+            <button onclick="showTab('pdf')" class="tab-btn">Upload PDF</button>
+        </div>
+
+        <!-- TEXT -->
+        <div id="text" class="upload-content active">
+            <textarea id="content" placeholder="Paste your learning material here..."></textarea>
+        </div>
+
+        <!-- URL -->
+        <div id="url" class="upload-content">
+            <input type="text" id="urlInput" placeholder="Enter website URL">
+        </div>
+
+        <!-- PDF -->
+        <div id="pdf" class="upload-content">
+            <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg">
+        </div>
+
+        <!-- ================= QUESTION SETTINGS ================= -->
+
+        <hr style="margin:30px 0;">
+
+        <h3>Quiz Settings</h3>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+
+            <div>
+                <label>Difficulty Level</label>
+                <select id="difficultyLevel">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Number of MCQ</label>
+                <input type="number" id="mcqCount" value="2" min="0">
+            </div>
+
+            <div>
+                <label>Number of True/False</label>
+                <input type="number" id="tfCount" value="2" min="0">
+            </div>
+
+            <div>
+                <label>Number of Short Answer</label>
+                <input type="number" id="shortCount" value="1" min="0">
+            </div>
+
+            <div>
+                <label>Number of Long Answer</label>
+                <input type="number" id="longCount" value="1" min="0">
+            </div>
+
+        </div>
+
+        <!-- ================= GENERATE BUTTON ================= -->
+
+        <button id="uploadBtn" onclick="uploadContent()" style="margin-top:25px;">
+            Upload & Generate Quiz
+        </button>
+
+        <div id="processingStatus" class="processing-status"></div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>

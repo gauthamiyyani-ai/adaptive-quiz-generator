@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz - Adaptive Quiz</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="quiz-body">
+
+<div class="quiz-wrapper">
+
+    <div class="quiz-header">
+        <h2>Quiz Session</h2>
+        <div class="quiz-nav">
+            <a href="/dashboard-page">Dashboard</a>
+<a href="/admin-page">Admin</a>
+        </div>
+    </div>
+
+<div class="quiz-card">
+
+    <!-- Top Bar -->
+    <div class="quiz-topbar">
+        <span id="progressText">Question 1 of 10</span>
+        <span id="scoreText">Score: 0%</span>
+    </div>
+
+    <!-- Question Area -->
+    <div id="questionContainer"></div>
+
+    <!-- Navigation -->
+    <div class="quiz-navigation">
+        <button onclick="nextQuestion()" id="nextBtn">Next Question</button>
+    </div>
+
+    <!-- Performance Stats -->
+    <div class="performance-stats">
+        <div>
+            <h4 id="accuracy">0%</h4>
+            <p>Accuracy</p>
+        </div>
+        <div>
+            <h4 id="avgTime">0s</h4>
+            <p>Avg Response Time</p>
+        </div>
+        <div>
+            <h4 id="difficultyDisplay">Easy</h4>
+            <p>Current Difficulty</p>
+        </div>
+    </div>
+
+</div>
+    <div id="resultCard" class="quiz-card" style="display:none;"></div>
+
+</div>
+
+<script src="/static/js/main.js"></script></body>
+</html>

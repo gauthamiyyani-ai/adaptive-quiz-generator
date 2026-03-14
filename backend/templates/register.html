@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - Adaptive Quiz</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+
+    <div class="auth-card">
+        <h2>Create Account 🚀</h2>
+        <p class="subtitle">Start your personalized learning journey</p>
+
+        <form id="registerForm">
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <input type="password" id="password" placeholder="Create password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="switch-text">
+            Already have an account?
+            <a href="/login-page">Login here</a>
+        </p>
+    </div>
+
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+    // Simple confirm password check
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert("Passwords do not match!");
+        }
+    });
+</script>
+</body>
+</html>
