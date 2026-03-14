@@ -10,9 +10,44 @@
 <div class="dashboard-wrapper">
 
     <!-- Header -->
-    <div class="dashboard-header">
-        <h2>Learning Material Upload</h2>
-        <a href="/admin-page">Admin Panel</a>
+    <div class="dashboard-header modern-header">
+        <div>
+            <h2>My Learning Dashboard</h2>
+            <p class="dashboard-subtitle">Track your progress and improve your knowledge</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/admin-page">Admin Panel</a>
+        </div>
+    </div>
+
+    <!-- PERSONAL ANALYTICS -->
+    <div class="analytics-grid">
+        <div class="analytics-card">
+            <h3 id="myScore">0</h3>
+            <p>My Score</p>
+        </div>
+
+        <div class="analytics-card">
+            <h3 id="myAccuracy">0%</h3>
+            <p>Accuracy</p>
+        </div>
+
+        <div class="analytics-card">
+            <h3 id="myAvgTime">0s</h3>
+            <p>Avg Response Time</p>
+        </div>
+
+        <div class="analytics-card">
+            <h3 id="knowledgeLevel">Beginner</h3>
+            <p>Knowledge Level</p>
+        </div>
+    </div>
+
+    <!-- GRAPH SECTION -->
+    <div class="dashboard-card">
+        <h3>Performance Analysis</h3>
+        <p class="chart-subtitle">Your current quiz accuracy</p>
+        <canvas id="accuracyChart" height="120"></canvas>
     </div>
 
     <!-- Upload Section -->
@@ -42,8 +77,7 @@
             <input type="file" id="fileInput" accept=".pdf">
         </div>
 
-        <!-- ================= QUESTION SETTINGS ================= -->
-
+        <!-- QUIZ SETTINGS -->
         <hr style="margin:30px 0;">
 
         <h3>Quiz Settings</h3>
@@ -81,8 +115,6 @@
 
         </div>
 
-        <!-- ================= GENERATE BUTTON ================= -->
-
         <button id="uploadBtn" onclick="uploadContent()" style="margin-top:25px;">
             Upload & Generate Quiz
         </button>
@@ -93,6 +125,8 @@
 
 </div>
 
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/static/js/main.js"></script>
 </body>
 </html>

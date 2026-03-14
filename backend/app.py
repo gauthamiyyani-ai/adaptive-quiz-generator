@@ -313,22 +313,38 @@ def save_score():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO scores (user_email, score, accuracy, avg_time)
-        VALUES (?, ?, ?, ?)
-    """, (
-        data["email"],
-        data["score"],
-        data["accuracy"],
-        data["avgTime"]
-    ))
+    # Check if user already has a score entry
+    cursor.execute("SELECT * FROM scores WHERE user_email = ?", (data["email"],))
+    existing = cursor.fetchone()
+
+    if existing:
+        # Update existing user's score
+        cursor.execute("""
+            UPDATE scores
+            SET score = ?, accuracy = ?, avg_time = ?
+            WHERE user_email = ?
+        """, (
+            data["score"],
+            data["accuracy"],
+            data["avgTime"],
+            data["email"]
+        ))
+    else:
+        # Insert new score
+        cursor.execute("""
+            INSERT INTO scores (user_email, score, accuracy, avg_time)
+            VALUES (?, ?, ?, ?)
+        """, (
+            data["email"],
+            data["score"],
+            data["accuracy"],
+            data["avgTime"]
+        ))
 
     conn.commit()
     conn.close()
 
-    return jsonify({"message": "Score saved"})
-
-
+    return jsonify({"message": "Score saved successfully"})
 # ================= ADMIN ROUTES =================
 @app.route("/admin/users")
 def get_users():
@@ -358,7 +374,36 @@ def get_content():
     content = cursor.fetchall()
     conn.close()
     return jsonify({"content": [dict(c) for c in content]})
+#================== USER PERFORMANCE =================
+@app.route("/user-performance/<email>")
+def user_performance(email):
+    conn = get_connection()
+    cursor = conn.cursor()
 
+    cursor.execute("""
+        SELECT user_email, score, accuracy, avg_time
+        FROM scores
+        WHERE user_email = ?
+    """, (email,))
+    score = cursor.fetchone()
+
+    conn.close()
+
+    if not score:
+        return jsonify({
+            "user": email,
+            "score": 0,
+            "accuracy": 0,
+            "avg_time": 0,
+            "message": "No performance data yet"
+        })
+
+    return jsonify({
+        "user": score["user_email"],
+        "score": score["score"],
+        "accuracy": score["accuracy"],
+        "avg_time": score["avg_time"]
+    })
 
 # ================= RUN =================
 if __name__ == "__main__":

@@ -7,27 +7,22 @@ if (document.getElementById("registerForm")) {
     document.getElementById("registerForm").onsubmit = async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
+        const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
-        try {
-            const response = await fetch(API + "/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
+        const response = await fetch(API + "/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (response.ok) {
-                alert(data.message || "Registered Successfully!");
-                window.location.href = "/login-page";
-            } else {
-                alert(data.message || "Registration failed");
-            }
-        } catch (error) {
-            console.error("Register Error:", error);
-            alert("Something went wrong during registration.");
+        if (response.ok) {
+            alert("Registered Successfully!");
+            window.location.href = "/login-page";
+        } else {
+            alert(data.message || "Registration failed");
         }
     };
 }
@@ -39,36 +34,93 @@ if (document.getElementById("loginForm")) {
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
+        const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
-        try {
-            const response = await fetch(API + "/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
+        const response = await fetch(API + "/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
 
+        if (response.ok) {
+            localStorage.setItem("email", email);
+            window.location.href = "/dashboard-page";
+        } else {
             const data = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem("email", email);
-                alert(data.message || "Login successful");
-                window.location.href = "/dashboard-page";
-            } else {
-                alert(data.message || "Invalid credentials");
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
-            alert("Something went wrong during login.");
+            alert(data.message || "Invalid credentials");
         }
     });
 }
 
 /* =====================================
+   USER PERFORMANCE DASHBOARD
+===================================== */
+async function loadUserPerformance() {
+    const email = localStorage.getItem("email");
+
+    if (!email || !document.getElementById("myScore")) return;
+
+    try {
+        const response = await fetch(API + `/user-performance/${email}`);
+        const data = await response.json();
+
+        document.getElementById("myScore").innerText = data.score || 0;
+        document.getElementById("myAccuracy").innerText = `${data.accuracy || 0}%`;
+        document.getElementById("myAvgTime").innerText = `${data.avg_time || 0}s`;
+
+        const accuracy = parseFloat(data.accuracy || 0);
+        let level = "Beginner";
+
+        if (accuracy >= 80) {
+            level = "Advanced";
+        } else if (accuracy >= 50) {
+            level = "Intermediate";
+        }
+
+        document.getElementById("knowledgeLevel").innerText = level;
+
+        renderAccuracyChart(accuracy);
+
+    } catch (error) {
+        console.error("User performance load error:", error);
+    }
+}
+
+function renderAccuracyChart(accuracy) {
+    const canvas = document.getElementById("accuracyChart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Accuracy"],
+            datasets: [{
+                label: "Accuracy %",
+                data: [accuracy]
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+loadUserPerformance();
+
+/* =====================================
    DASHBOARD UPLOAD
 ===================================== */
 async function uploadContent() {
+
     const textArea = document.getElementById("content");
     const urlInput = document.getElementById("urlInput");
     const fileInput = document.getElementById("fileInput");
@@ -78,44 +130,29 @@ async function uploadContent() {
     button.disabled = true;
 
     try {
-        // ================= TEXT =================
+
         if (textArea && textArea.value.trim() !== "") {
-            const response = await fetch(API + "/upload", {
+
+            await fetch(API + "/upload", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: textArea.value })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.error || data.message || "Text upload failed.");
-                button.disabled = false;
-                button.innerText = "Upload & Generate Quiz";
-                return;
-            }
         }
 
-        // ================= URL (currently saved as plain text) =================
         else if (urlInput && urlInput.value.trim() !== "") {
-            const response = await fetch(API + "/upload", {
+
+            await fetch(API + "/upload", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: urlInput.value })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.error || data.message || "URL upload failed.");
-                button.disabled = false;
-                button.innerText = "Upload & Generate Quiz";
-                return;
-            }
         }
 
-        // ================= FILE (PDF / IMAGE) =================
         else if (fileInput && fileInput.files.length > 0) {
+
             const formData = new FormData();
             formData.append("file", fileInput.files[0]);
 
@@ -124,17 +161,15 @@ async function uploadContent() {
                 body: formData
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                alert(data.error || "File processing failed.");
+                const errorData = await response.json();
+                alert(errorData.error || "File processing failed.");
                 button.disabled = false;
                 button.innerText = "Upload & Generate Quiz";
                 return;
             }
         }
 
-        // ================= NOTHING PROVIDED =================
         else {
             alert("Please provide learning material.");
             button.disabled = false;
@@ -142,7 +177,6 @@ async function uploadContent() {
             return;
         }
 
-        // ================= REDIRECT WITH SETTINGS =================
         const difficulty = document.getElementById("difficultyLevel")?.value || "Easy";
         const mcq = document.getElementById("mcqCount")?.value || 2;
         const tf = document.getElementById("tfCount")?.value || 2;
@@ -154,7 +188,7 @@ async function uploadContent() {
 
     } catch (error) {
         console.error("Upload Error:", error);
-        alert("Something went wrong while uploading.");
+        alert("Something went wrong.");
         button.disabled = false;
         button.innerText = "Upload & Generate Quiz";
     }
@@ -163,6 +197,7 @@ async function uploadContent() {
 /* =====================================
    QUIZ ENGINE
 ===================================== */
+
 let questions = [];
 let currentIndex = 0;
 let userAnswers = [];
@@ -171,6 +206,7 @@ let totalTime = 0;
 let startTime = 0;
 
 if (document.getElementById("questionContainer")) {
+
     const params = new URLSearchParams(window.location.search);
 
     const difficulty = params.get("difficulty") || "Easy";
@@ -182,27 +218,22 @@ if (document.getElementById("questionContainer")) {
     fetch(API + `/generate-quiz?difficulty=${difficulty}&mcq=${mcq}&tf=${tf}&short=${short}&long=${long}`)
         .then(res => res.json())
         .then(data => {
+
             questions = data.questions || [];
+            userAnswers = new Array(questions.length).fill(null);
 
             if (questions.length === 0) {
-                document.getElementById("questionContainer").innerHTML =
-                    "<h3>No quiz questions could be generated. Please upload more content.</h3>";
+                document.getElementById("questionContainer").innerHTML = "<h3>No questions generated. Please upload valid content.</h3>";
                 document.getElementById("nextBtn").style.display = "none";
                 return;
             }
 
-            userAnswers = new Array(questions.length).fill(null);
             renderQuestion();
-        })
-        .catch(error => {
-            console.error("Quiz Load Error:", error);
-            document.getElementById("questionContainer").innerHTML =
-                "<h3>Failed to load quiz. Please try again.</h3>";
-            document.getElementById("nextBtn").style.display = "none";
         });
 }
 
 function renderQuestion() {
+
     const q = questions[currentIndex];
     startTime = Date.now();
 
@@ -215,15 +246,16 @@ function renderQuestion() {
     let html = `<h3>${q.question}</h3>`;
 
     if (q.type === "mcq" || q.type === "truefalse") {
+
         html += `<div class="options-group">`;
 
         q.options.forEach(option => {
-            const safeOption = option.replace(/'/g, "\\'");
+
             const selected = userAnswers[currentIndex] === option ? "selected" : "";
 
             html += `
                 <div class="option-item ${selected}"
-                     onclick="selectOption(event, '${safeOption}')">
+                     onclick="selectOption(event, '${option.replace(/'/g, "\\'")}')">
                     ${option}
                 </div>
             `;
@@ -233,6 +265,7 @@ function renderQuestion() {
     }
 
     else if (q.type === "short") {
+
         html += `
             <input type="text"
                    class="short-input"
@@ -242,6 +275,7 @@ function renderQuestion() {
     }
 
     else if (q.type === "long") {
+
         html += `
             <textarea class="short-input"
                       rows="5"
@@ -256,6 +290,7 @@ function renderQuestion() {
 }
 
 function selectOption(event, value) {
+
     userAnswers[currentIndex] = value;
 
     document.querySelectorAll(".option-item")
@@ -265,9 +300,8 @@ function selectOption(event, value) {
 }
 
 function nextQuestion() {
-    if (!questions.length) return;
 
-    if (!userAnswers[currentIndex] || userAnswers[currentIndex].toString().trim() === "") {
+    if (!userAnswers[currentIndex]) {
         alert("Please answer before continuing.");
         return;
     }
@@ -278,9 +312,10 @@ function nextQuestion() {
     const q = questions[currentIndex];
 
     if (q.type === "mcq" || q.type === "truefalse") {
+
         if (
-            userAnswers[currentIndex].toString().toLowerCase().trim() ===
-            q.correct.toString().toLowerCase().trim()
+            userAnswers[currentIndex].toLowerCase().trim() ===
+            q.correct.toLowerCase().trim()
         ) {
             correctCount++;
         }
@@ -297,6 +332,7 @@ function nextQuestion() {
 }
 
 function updateLiveStats() {
+
     const answered = currentIndex + 1;
     const accuracy = Math.round((correctCount / answered) * 100);
     const avgTime = (totalTime / answered).toFixed(1);
@@ -307,7 +343,6 @@ function updateLiveStats() {
 }
 
 function evaluateQuiz() {
-    if (!questions.length) return;
 
     const accuracy = Math.round((correctCount / questions.length) * 100);
     const avgTime = (totalTime / questions.length).toFixed(1);
@@ -316,7 +351,7 @@ function evaluateQuiz() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            email: localStorage.getItem("email") || "guest@example.com",
+            email: localStorage.getItem("email"),
             score: correctCount,
             accuracy: accuracy,
             avgTime: avgTime
@@ -324,12 +359,7 @@ function evaluateQuiz() {
     })
     .then(res => res.json())
     .then(() => {
-        window.location.href = "/admin-page?show=leaderboard";
-    })
-    .catch(error => {
-        console.error("Save Score Error:", error);
-        alert("Quiz completed, but score could not be saved.");
-        window.location.href = "/admin-page?show=leaderboard";
+        window.location.href = "/dashboard-page";
     });
 }
 
@@ -337,6 +367,7 @@ function evaluateQuiz() {
    DASHBOARD TAB SWITCHING
 ===================================== */
 function showTab(tabName) {
+
     document.querySelectorAll(".upload-content")
         .forEach(tab => tab.classList.remove("active"));
 
@@ -345,9 +376,8 @@ function showTab(tabName) {
 
     document.getElementById(tabName).classList.add("active");
 
-    // Highlight active button
     document.querySelectorAll(".tab-btn").forEach(btn => {
-        if (btn.getAttribute("onclick")?.includes(tabName)) {
+        if (btn.getAttribute("onclick").includes(tabName)) {
             btn.classList.add("active");
         }
     });
