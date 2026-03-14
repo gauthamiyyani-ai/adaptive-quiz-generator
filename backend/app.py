@@ -2,9 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import sqlite3
 import random
-import pytesseract
 from PyPDF2 import PdfReader
-from PIL import Image
 import re
 import os
 
@@ -193,11 +191,7 @@ def upload_file():
                 extracted_text += page.extract_text() or ""
 
         elif filename.endswith((".png", ".jpg", ".jpeg")):
-            # NOTE:
-            # This requires Tesseract OCR installed on system.
-            # If not installed, it will throw an error.
-            image = Image.open(file)
-            extracted_text = pytesseract.image_to_string(image)
+            return jsonify({"error": "Image OCR not supported in deployed version"}), 400
 
         else:
             return jsonify({"error": "Unsupported file type"}), 400
